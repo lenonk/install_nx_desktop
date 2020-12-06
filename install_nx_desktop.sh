@@ -1,5 +1,7 @@
 #!/usr/bin/fish
 
+# TODO: Handle dependencies 
+
 function build_and_install
     echo "Building and installing $argv"
 
@@ -19,10 +21,12 @@ function clone_or_update
         echo "Cloning $argv..."
         git clone --quiet https://github.com/nx-desktop/$argv.git >> /dev/null
     else
+        pushd .
         cd $argv
         echo "Updating $argv..."
         git fetch origin >> /dev/null
         git merge --ff-only origin/master >> /dev/null
+        popd
     end
 end
 
@@ -30,7 +34,7 @@ end
 pushd .
 if not test -d ./luv-icon-theme
     echo "Cloning Luv Icon Theme..."
-    git --quiet clone https://github.com/Nitrux/luv-icon-theme.git >> /dev/null
+    git clone --quiet https://github.com/Nitrux/luv-icon-theme.git >> /dev/null
     cd luv-icon-theme
 else
     cd luv-icon-theme
