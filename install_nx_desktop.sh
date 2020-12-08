@@ -1,7 +1,13 @@
 #!/usr/bin/fish
 
+function error_out
+    echo $argv
+    exit
+end
+
 # TODO: Handle dependencies 
-sudo pacman -Sy extra-cmake-modules
+sudo pacman --noconfirm -Sy extra-cmake-modules || error_out "Could not install extra-cmake-modules."
+sudo pacman --noconfirm -Sy kdesignerplugin || error_out "Could not install kdesignerplugin."
 
 function build_and_install
     echo "Building and installing $argv"
@@ -12,10 +18,9 @@ function build_and_install
 
     mkdir build && cd build
 
-    cmake .. >> /dev/null &&
-    make >> /dev/null 2>&1 &&
-    sudo make install >> /dev/null 2>&1 ||
-    echo "CMake failed! Aborting installation.";  exit
+    cmake .. >> /dev/null || error_out "CMake failed.  Aborting installation."
+    make >> /dev/null 2>&1 || error_out "CMake failed. Aborting installation."
+    sudo make install >> /dev/null 2>&1 || error_out "Make failed. Aborting installation."
 end 
 
 function clone_or_update
