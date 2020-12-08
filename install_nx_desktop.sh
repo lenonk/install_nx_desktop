@@ -135,6 +135,7 @@ clone_or_update nx-window-deco
 
 pushd .
 cd nx-window-deco
+sed -i 's/#include <QPainter>/#include <QPainter>\n#include <QPainterPath>/g' ./breezebutton.cpp
 build_and_install "NX Window Decoration"
 popd
 ###################################################
