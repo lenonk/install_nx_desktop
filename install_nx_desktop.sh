@@ -1,6 +1,7 @@
 #!/usr/bin/fish
 
 # TODO: Handle dependencies 
+sudo pacman -Sy extra-cmake-modules
 
 function build_and_install
     echo "Building and installing $argv"
@@ -13,7 +14,8 @@ function build_and_install
 
     cmake .. >> /dev/null &&
     make >> /dev/null 2>&1 &&
-    sudo make install >> /dev/null 2>&1
+    sudo make install >> /dev/null 2>&1 ||
+    echo "CMake failed! Aborting installation.";  exit
 end 
 
 function clone_or_update
@@ -44,6 +46,9 @@ else
 end
 
 echo "Copying Luv Icon Theme..."
+if not test -d ~/.local/share/icons
+    mkdir -p ~/.local/share/icons
+end
 cp -rf Luv ~/.local/share/icons
 popd
 ###################################################
@@ -57,18 +62,38 @@ pushd .
 echo "Copying look and feel..."
 cd nx-plasma-look-and-feel
 echo -e "\tCopying Plasma themes..."
+
+if not test -d ~/.local/share/plasma/desktoptheme
+    mkdir -p ~/.local/share/plasma/desktoptheme
+end
 cp -rf plasma/* ~/.local/share/plasma/desktoptheme/
 
 echo -e "\tCopying color schemes..."
+
+if not test -d ~/.local/share/color-schemes
+    mkdir -p ~/.local/share/color-schemes
+end
 cp -rf color-scheme/* ~/.local/share/color-schemes/
 
 echo -e "\tCopying Konsole profile..."
+
+if not test -d ~/.local/share/konsole
+    mkdir -p ~/.local/share/konsole
+end
 cp -rf konsole/* ~/.local/share/konsole/
 
 echo -e "\tCopying SDDM themes..."
+
+if not test -d ~/.local/share/sddm/themes
+    mkdir -p ~/.local/share/sddm/themes
+end
 sudo cp -rf sddm/* /usr/share/sddm/themes/
 
 echo -e "\tCopying SDDM themes..."
+
+if not test -d ~/.local/share/wallpapers
+    mkdir -p ~/.local/share/wallpapers
+end
 sudo cp -rf wallpapers/* /usr/share/wallpapers/
 popd
 ###################################################
@@ -80,6 +105,10 @@ clone_or_update nx-kvantum-theme
 pushd .
 echo "Copying Kvantum themes..."
 cd nx-kvantum-theme/themes
+
+if not test -d ~/.config/Kvantum
+    mkdir -p ~/.config/Kvantum
+end
 cp -rf * ~/.config/Kvantum
 popd
 ###################################################
@@ -91,6 +120,10 @@ clone_or_update nx-gtk-themes
 pushd .
 echo "Copying GTK theme..."
 cd nx-gtk-themes/src
+
+if not test -d ~/.themes
+    mkdir -p ~/.themes
+end
 cp -rf nitrux ~/.themes
 cp -rf nitrux-dark ~/.themes
 popd
